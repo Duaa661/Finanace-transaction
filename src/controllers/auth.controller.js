@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model.js")
 const jwt = require("jsonwebtoken");
+const emailService=require("../services/email.service.js")
 /**
  * -  User Register Controller
  * - POST /api/auth/register
@@ -33,7 +34,9 @@ async function userRegisterController(req, res)  {
             _id: user._id,
             name:user.name,
             email: user.email,
-    },token})
+        }, token
+    })
+      await emailService.sendRegisterEmail(user.email,user.name)
 }
 /**
  * - Login Controller
@@ -69,7 +72,8 @@ async function userLoginController(req, res) {
             _id: user._id,
             name:user.name,
             email: user.email,
-    },token})
+        }, token
+    })
 
 }
 
