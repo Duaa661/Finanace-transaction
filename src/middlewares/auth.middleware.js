@@ -41,6 +41,11 @@ async function authSystemiddleware(req, res, next) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         // fetch the system user using token
         const user = await userModel.findById(decoded.userId).select("+systemUser")
+        if (!user) {
+        return res.status(401).json({
+        message: "User not found"
+       });
+        }
         if (!user.systemUser) {
             return res.status(403).json({
                 message:"Forbidden access, not a system user"

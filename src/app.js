@@ -15,7 +15,15 @@ app.use("/api/auth", authRouter)
 /**
  * - User Account Routes Api Call
  */
-app.use("/api/accounts",accountRouter)
+app.use("/api/accounts", accountRouter)
+/**
+ * - User Record Routes Api Call
+ */
+app.use("/api/records", require("./routes/record.routes"));
+/**
+ * - User Dashboard Routes Api Call
+ */
+app.use("/api/dashboard", require("./routes/dashboard.routes"));
 
 app.use("/api/transaction",transactionRoutes)
 module.exports=app

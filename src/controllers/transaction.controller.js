@@ -35,7 +35,12 @@ async function createTransaction(req, res) {
         })
     }
     const fromUserAccount = await accountModel.findOne({ _id: fromAccount });
-    const toUserAccount = await accountModel.finOne({ _id: toAccount })
+    if (fromUserAccount.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({
+        message: "Unauthorized account access"
+    });
+}
+    const toUserAccount = await accountModel.findOne({ _id: toAccount })
     if (!fromUserAccount || !toUserAccount) {
         return res.status(400).json({
             message:"Invalid fromAccount to toAccount"
@@ -146,11 +151,11 @@ async function createTransaction(req, res) {
      * 10.Send email notification
      **/
     
-    await emailService.sendTransactiontoEmail(req.user.email, req.user.name, amount, toAccount._id)
     return res.status(201).json({
         message: "Transaction Completed Sucessfully",
             transaction:transaction
     })
+     await emailService.sendTransactiontoEmail(req.user.email, req.user.name, amount, toAccount)
 }
 
 async function createIntialFundTransaction(req, res) {

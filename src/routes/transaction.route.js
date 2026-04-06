@@ -5,5 +5,5 @@ const TransactionController=require("../controllers/transaction.controller.js")
 const transactionRoutes = Router();
 
 transactionRoutes.post("/",authMiddleware.authMiddleware,TransactionController.createTransaction)
-transactionRoutes.post("/system/inital-funds",authMiddleware. authSystemiddleware,TransactionController.createIntialFundTransaction)
+transactionRoutes.post("/system/initial-funds",authMiddleware.authMiddleware,TransactionController.createIntialFundTransaction)
 module.exports=transactionRoutes

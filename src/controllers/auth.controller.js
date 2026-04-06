@@ -8,8 +8,8 @@ const tokenBlacklistModel=require("../models/blacklist.model")
 */
 
 async function userRegisterController(req, res)  {
-    const { name, email, password } = req.body;
-    console.log(name,email)
+    const { name, email, password, role } = req.body;
+
     const isExists = await userModel.findOne({
         email: email
     })
@@ -19,9 +19,12 @@ async function userRegisterController(req, res)  {
     }
     
     // create a new account
-    const user = await userModel.create({
-        name,email,password
-    })
+   const user = await userModel.create({
+    name,
+    email,
+    password,
+    role: role || "VIEWER"
+      });
     // Generate a toen for user id
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
         expiresIn:"3d"
@@ -78,7 +81,7 @@ async function userLoginController(req, res) {
 
 }
 
-async function userLogoutController() {
+async function userLogoutController(req, res){
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
