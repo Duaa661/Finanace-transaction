@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
-const { required } = require("zod/mini")
-
+const ledgerModel=require("./legerModel")
 const accountSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -13,8 +12,8 @@ const accountSchema = new mongoose.Schema({
         enum: {
             values: ["ACTIVE", "FROZEN", "CLOSED"],
             massage: "Status can be either ACTIVE,FROZEN or CLOSED",
-            default:"ACTIVE"
-        }
+        },
+        default:"ACTIVE"
     },
     currency: {
         type: String,
@@ -26,6 +25,44 @@ const accountSchema = new mongoose.Schema({
 })
 accountSchema.index({user:1,status:1})
 
+accountSchema.methods.getBalance = async function () {
+    const balancedata = await ledgerModel.aggregate([
+        { $match: { account: this._id } },
+        {
+            $group: {
+                _id: null,
+                totalDebit: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$type", "DEBIT"] },
+                            "$amount",
+                            0
+                        ]
+                    }
+                },
+                totalCredit: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$type", "CREDIT"] },
+                            "$amount",
+                            0
+                        ]
+                    }
+                },
+            },
+        },
+        {
+            $project:{
+                _id: 0,
+                balance:{$subtract:["$totalCredit","$totalDebit"]}
+            }
+        }
+    ])
+    if (balancedata.length === 0) {
+        return 0;
+    }
+    return balancedata[0].balance
+}
 const accountModel = mongoose.model("account", accountSchema)
 
 module.exports=accountModel

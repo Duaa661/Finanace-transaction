@@ -54,6 +54,102 @@ async function sendRegisterEmail(userEmail, name) {
   await sendEmail(userEmail, subject, text, html);
 }
 
+// Transaction Email
+async function sendTransactiontoEmail(userEmail, name, amount, toAccountId) {
+  const subject = 'Transaction Successful 💸';
+
+  const text = `
+Hello ${name},
+
+Your transaction was successful.
+
+Amount Sent: ₹${amount}
+To Account ID: ${toAccountId}
+
+If you did not perform this transaction, please contact support immediately.
+
+Best regards,
+Backend Ledger Team
+`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height:1.6;">
+      <h2 style="color:#4CAF50;">Transaction Successful 💸</h2>
+      
+      <p>Hello <strong>${name}</strong>,</p>
+      
+      <p>Your transaction has been completed successfully.</p>
+
+      <table style="border-collapse: collapse; margin-top: 10px;">
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">Amount:</td>
+          <td style="padding: 8px;">₹${amount}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">To Account:</td>
+          <td style="padding: 8px;">${toAccountId}</td>
+        </tr>
+      </table>
+
+      <p style="margin-top: 15px;">
+        If you did not perform this transaction, please contact support immediately.
+      </p>
+
+      <p>Best regards,<br><strong>Backend Ledger Team</strong></p>
+    </div>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+}
+async function sendTransactionFailureEmail(userEmail, name, amount, toAccountId) {
+  const subject = "Transaction Failed ❌";
+
+  const text = `
+  Hello ${name},
+
+We regret to inform you that your transaction has failed.
+
+Amount: ₹${amount}
+To Account ID: ${toAccountId}
+
+Please try again later. If the issue persists, contact support.
+
+Best regards,
+Backend Ledger Team
+`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height:1.6;">
+      <h2 style="color:#e53935;">Transaction Failed ❌</h2>
+
+      <p>Hello <strong>${name}</strong>,</p>
+
+      <p>We regret to inform you that your transaction could not be completed.</p>
+
+      <table style="border-collapse: collapse; margin-top: 10px;">
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">Amount:</td>
+          <td style="padding: 8px;">₹${amount}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">To Account:</td>
+          <td style="padding: 8px;">${toAccountId}</td>
+        </tr>
+      </table>
+
+      <p style="margin-top: 15px;">
+        Please try again later. If the issue persists, contact support.
+      </p>
+
+      <p>Best regards,<br><strong>Backend Ledger Team</strong></p>
+    </div>
+  `;
+
+  // Correct function call
+  await sendEmail(userEmail, subject, text, html);
+}
 module.exports = {
-  sendRegisterEmail
+  sendRegisterEmail,
+  sendTransactiontoEmail,
+  sendTransactionFailureEmail
 };
