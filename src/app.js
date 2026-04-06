@@ -28,6 +28,6 @@ app.use("/api/dashboard", require("./routes/dashboard.routes"));
 app.use("/api/transaction", transactionRoutes)
 
 app.get("/", (req, res) => {
-    res.send*"Ledger Service is up and running"
+    res.send("Ledger Service is up and running")
 })
 module.exports=app
